@@ -1,12 +1,16 @@
 import { constants } from "../constants";
 import { ethers, Contract, utils } from "ethers";
 import HogwartsCardFactoryABI from "../abi/HogwartsCardFactory.json";
-import { useState } from "react";
+import  { useState } from "react";
+import axios from 'axios';
+import { isAsExpression } from 'typescript';
+import { TransactionDescription } from 'ethers/lib/utils';
 
 const abi = HogwartsCardFactoryABI.abi; // ABI는 스마트 컨트랙트의 ABI(Application Binary Interface) 정보를 가져온다.
 interface MintTranProps {
   account: string;
   setAccount: (account: string) => void;
+
 }
 
 export const Mint = ({ account, setAccount }: MintTranProps) => {
@@ -18,6 +22,8 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
   const [level, setLevel] = useState("");
   const [blood, setBlood] = useState("");
   const [dormitory, setDormitory] = useState("");
+  const [transactionData, setTransactionData] = useState(null);
+  const [error, setError] = useState(null);
 
   //ethers.js 라이브러리를 사용하여 이더리움과 연결
   //// signer는 거래에 서명할 수 있는 객체
@@ -33,6 +39,29 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
     provider
   );
   HogwartsCardFactory = HogwartsCardFactory.connect(signer);
+  // ScanData 에 대한 정의   
+
+  const fetchData = () => {
+    // 상태와 상태 업데이트 함수 정의
+
+    const apiKey = 'Y3A9SI7QRVMNKSU8QWHBEBACAI26EF6XIN';
+    const transactionHash = '0xf8964a6d5e383aad4daaea68f1511ecf45fbc5ccf1eb648a1e297c6660b064cc';
+    const apiUrl = `https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=${transactionHash}&apikey=${apiKey}`;
+  
+    // 데이터를 가져오는 함수
+      axios.get(apiUrl)
+        .then((response: { data: { result: any; }; }) => {
+          if (response.data.result) {
+            setTransactionData(response.data.result); // 상태 업데이트
+          } else {
+            setError('트랜잭션 정보를 찾을 수 없습니다.'); // 에러 상태 업데이트
+          }
+        })
+        .catch((error: { message: any; }) => {
+          setError(`API 호출 중 오류 발생: ${error.message}`); // 에러 상태 업데이트
+        });
+    };
+  
 
   // 함수를 정의하여 스마트 컨트랙트와 상호작용
   const Mint = async () => {
@@ -108,6 +137,11 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
       </div>
       <div>
         <button onClick={() => Mint()}>Mint</button>
+      </div>
+      <div>
+      <button onClick={fetchData}>Data</button>
+      {transactionData && <p>Transaction Data: {JSON.stringify(transactionData)}</p>}
+      {error && <p>error: {error}</p>}
       </div>
     </>
   );
