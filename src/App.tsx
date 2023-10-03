@@ -1,11 +1,33 @@
+import { useState } from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Main } from "./pages/Main";
+import ErrorPage from "./pages/error/ErrorPage";
+import NotFoundErrorPage from "./pages/error/NotFoundErrorPage";
+import { Mint } from "./pages/Mint";
+import Login from "./pages/Login";
 
-function App() {
-  return (
-    <div>
-      <Main />
-    </div>
-  );
+export default function App() {
+  const [account, setAccount] = useState("");
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Main />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/mint",
+      element: <Mint account={account} setAccount={setAccount} />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/login",
+      element: <Login account={account} setAccount={setAccount} />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "*",
+      element: <NotFoundErrorPage />,
+    },
+  ]);
+  return <RouterProvider router={router} />;
 }
-
-export default App;
