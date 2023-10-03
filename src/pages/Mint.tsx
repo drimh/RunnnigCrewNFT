@@ -2,10 +2,10 @@ import { constants } from "../constants";
 import { ethers, Contract, utils } from "ethers";
 import HogwartsCardFactoryABI from "../abi/HogwartsCardFactory.json";
 import  { useState } from "react";
-import axios from 'axios';
+
 import { isAsExpression } from 'typescript';
 import { TransactionDescription } from 'ethers/lib/utils';
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 const abi = HogwartsCardFactoryABI.abi; // ABI는 스마트 컨트랙트의 ABI(Application Binary Interface) 정보를 가져온다.
 interface MintTranProps {
