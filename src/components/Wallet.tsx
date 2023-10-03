@@ -1,5 +1,6 @@
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
+import styled from "@emotion/styled";
 
 interface WalletProps {
   account: string;
@@ -24,7 +25,7 @@ export const Wallet = ({ account, setAccount }: WalletProps) => {
           </div>
         </>
       ) : (
-        <button onClick={() => connect()}>Connect Wallet</button>
+       <button onClick={() => connect()}>Connect Wallet</button>
       )}
     </>
   );

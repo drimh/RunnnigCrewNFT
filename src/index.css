@@ -1,12 +1,19 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: "Noto Sans KR", sans-serif;
-  overscroll-behavior: none;
   font-size: 1em;
-}
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(214, 176, 122);
+  background-position: 0%;
+  background-attachment:initial;
+
+ }
 
 html,
 * {
   box-sizing: border-box;
+
 }

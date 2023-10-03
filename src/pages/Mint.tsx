@@ -7,27 +7,35 @@ import { isAsExpression } from "typescript";
 import { TransactionDescription } from "ethers/lib/utils";
 import styled from "@emotion/styled";
 
+
 const abi = HogwartsCardFactoryABI.abi; // ABI는 스마트 컨트랙트의 ABI(Application Binary Interface) 정보를 가져온다.
 interface MintTranProps {
   account: string;
   setAccount: (account: string) => void;
 }
-const MintButton = styled.button`
-  width: 400px;
-  height: 200px;
-  background-color: #191970;
-  color: white;
-  text-align: center;
-`;
 const StyledInput = styled.input`
-  background-color: #a0522d; // 원하는 배경색으로 변경
-  border: 5px solid #000000; // 테두리 색상도 필요하다면 변경
+  background-color: #E8AF00; 
   padding: 15px;
-  // 패딩 추가
   color: black;
-  margin: 5px 0; // 상하 마진 추가
-  // 기타 원하는 스타일 속성을 추가
+  height:100px;
+   width:200px;
+  margin: 5px 0; 
+  flex: 2;
+
+  
 `;
+
+const MintButton = styled.button`
+padding: 15px;
+height:100px;
+width:600px;
+or: black;
+margin: 5px 0; 
+background-color:#664F47;
+
+  
+`;
+
 
 export const Mint = ({ account, setAccount }: MintTranProps) => {
   const [name, setName] = useState("");
@@ -103,7 +111,9 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
   return (
     <>
       <div>
+      <h1>Sing IN</h1>
         <StyledInput
+      
           type="text"
           placeholder="Name"
           value={name}
@@ -156,12 +166,15 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
         <MintButton onClick={() => Mint()}>Mint</MintButton>
       </div>
       <div>
-        <button onClick={fetchData}>Data</button>
+
+        <button onClick={fetchData}>
         {transactionData && (
           <p>Transaction Data: {JSON.stringify(transactionData)}</p>
         )}
         {error && <p>error: {error}</p>}
-      </div>
+        Data
+        </button>
+        </div>
     </>
   );
 };
