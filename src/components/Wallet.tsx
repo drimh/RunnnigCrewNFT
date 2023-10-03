@@ -25,7 +25,7 @@ export const Wallet = ({ account, setAccount }: WalletProps) => {
           </div>
         </>
       ) : (
-       <button onClick={() => connect()}>Connect Wallet</button>
+        <button onClick={() => connect()}>Connect Wallet</button>
       )}
     </>
   );
