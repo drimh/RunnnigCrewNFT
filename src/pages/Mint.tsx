@@ -111,7 +111,7 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
   return (
     <>
       <div>
-      <h1>Sing IN</h1>
+      <h1>Sign In</h1>
         <StyledInput
       
           type="text"
