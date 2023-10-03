@@ -6,38 +6,45 @@ import axios from "axios";
 import { isAsExpression } from "typescript";
 import { TransactionDescription } from "ethers/lib/utils";
 import styled from "@emotion/styled";
-
+import { useDisconnect } from "wagmi";
+import { useNavigate } from "react-router-dom";
 
 const abi = HogwartsCardFactoryABI.abi; // ABI는 스마트 컨트랙트의 ABI(Application Binary Interface) 정보를 가져온다.
 interface MintTranProps {
   account: string;
   setAccount: (account: string) => void;
 }
+
+// const [color, setColor] = useState("");
+
+// function changeColor(value) {
+//   switch (value) {
+//     case "그리핀도르":
+//       setColor("red");
+//   }
+// }
+
 const StyledInput = styled.input`
-  background-color: #E8AF00; 
+  background-color: #e8af00;
   padding: 15px;
   color: black;
-  height:100px;
-   width:200px;
-  margin: 5px 0; 
+  height: 100px;
+  width: 200px;
+  margin: 5px 0;
   flex: 2;
-
-  
 `;
 
 const MintButton = styled.button`
-padding: 15px;
-height:100px;
-width:600px;
-or: black;
-margin: 5px 0; 
-background-color:#664F47;
-
-  
+  padding: 15px;
+  height: 100px;
+  width: 600px;
+  or: black;
+  margin: 5px 0;
+  background-color: #664f47;
 `;
 
-
 export const Mint = ({ account, setAccount }: MintTranProps) => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [description, setDescription] = useState("");
@@ -48,6 +55,7 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
   const [dormitory, setDormitory] = useState("");
   const [transactionData, setTransactionData] = useState(null);
   const [error, setError] = useState("");
+  const { disconnect } = useDisconnect();
 
   //ethers.js 라이브러리를 사용하여 이더리움과 연결
   //// signer는 거래에 서명할 수 있는 객체
@@ -110,10 +118,21 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
   //사용자 입력을 받고, 버튼을 클릭하면 상태를 업데이트하거나 이더리움 트랜잭션을 발생시킨다.
   return (
     <>
-      <div>
-      <h1>Sign In</h1>
+      <div
+      // style={{
+      //   backgroundColor: color,
+      // }}
+      >
+        <button
+          onClick={async () => {
+            await disconnect();
+            navigate("/");
+          }}
+        >
+          로그아웃
+        </button>
+        <h1>Sign In</h1>
         <StyledInput
-      
           type="text"
           placeholder="Name"
           value={name}
@@ -166,15 +185,14 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
         <MintButton onClick={() => Mint()}>Mint</MintButton>
       </div>
       <div>
-
         <button onClick={fetchData}>
-        {transactionData && (
-          <p>Transaction Data: {JSON.stringify(transactionData)}</p>
-        )}
-        {error && <p>error: {error}</p>}
-        Data
+          {transactionData && (
+            <p>Transaction Data: {JSON.stringify(transactionData)}</p>
+          )}
+          {error && <p>error: {error}</p>}
+          Data
         </button>
-        </div>
+      </div>
     </>
   );
 };
