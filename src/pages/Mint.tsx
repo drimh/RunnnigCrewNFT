@@ -1,31 +1,30 @@
 import { constants } from "../constants";
 import { ethers, Contract, utils } from "ethers";
 import HogwartsCardFactoryABI from "../abi/HogwartsCardFactory.json";
-import  { useState } from "react";
-import axios from 'axios';
-import { isAsExpression } from 'typescript';
-import { TransactionDescription } from 'ethers/lib/utils';
-import styled from "styled-components";
+import { useState } from "react";
+import axios from "axios";
+import { isAsExpression } from "typescript";
+import { TransactionDescription } from "ethers/lib/utils";
+import styled from "@emotion/styled";
 
 const abi = HogwartsCardFactoryABI.abi; // ABI는 스마트 컨트랙트의 ABI(Application Binary Interface) 정보를 가져온다.
 interface MintTranProps {
   account: string;
   setAccount: (account: string) => void;
-
 }
-const RegisterButton = styled.button`
+const MintButton = styled.button`
   width: 400px;
   height: 200px;
-  background-color: 	#191970;
+  background-color: #191970;
   color: white;
   text-align: center;
 `;
 const StyledInput = styled.input`
-  background-color: 	#A0522D;  // 원하는 배경색으로 변경
-  border: 5px solid 	#000000; // 테두리 색상도 필요하다면 변경
-  padding: 15px; 
-   // 패딩 추가
-   color:black;
+  background-color: #a0522d; // 원하는 배경색으로 변경
+  border: 5px solid #000000; // 테두리 색상도 필요하다면 변경
+  padding: 15px;
+  // 패딩 추가
+  color: black;
   margin: 5px 0; // 상하 마진 추가
   // 기타 원하는 스타일 속성을 추가
 `;
@@ -40,7 +39,7 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
   const [blood, setBlood] = useState("");
   const [dormitory, setDormitory] = useState("");
   const [transactionData, setTransactionData] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
   //ethers.js 라이브러리를 사용하여 이더리움과 연결
   //// signer는 거래에 서명할 수 있는 객체
@@ -56,29 +55,30 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
     provider
   );
   HogwartsCardFactory = HogwartsCardFactory.connect(signer);
-  // ScanData 에 대한 정의   
+  // ScanData 에 대한 정의
 
   const fetchData = () => {
     // 상태와 상태 업데이트 함수 정의
 
-    const apiKey = 'Y3A9SI7QRVMNKSU8QWHBEBACAI26EF6XIN';
-    const transactionHash = '0xf8964a6d5e383aad4daaea68f1511ecf45fbc5ccf1eb648a1e297c6660b064cc';
+    const apiKey = "Y3A9SI7QRVMNKSU8QWHBEBACAI26EF6XIN";
+    const transactionHash =
+      "0xf8964a6d5e383aad4daaea68f1511ecf45fbc5ccf1eb648a1e297c6660b064cc";
     const apiUrl = `https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=${transactionHash}&apikey=${apiKey}`;
-  
+
     // 데이터를 가져오는 함수
-      axios.get(apiUrl)
-        .then((response: { data: { result: any; }; }) => {
-          if (response.data.result) {
-            setTransactionData(response.data.result); // 상태 업데이트
-          } else {
-            setError('트랜잭션 정보를 찾을 수 없습니다.'); // 에러 상태 업데이트
-          }
-        })
-        .catch((error: { message: any; }) => {
-          setError(`API 호출 중 오류 발생: ${error.message}`); // 에러 상태 업데이트
-        });
-    };
-  
+    axios
+      .get(apiUrl)
+      .then((response: { data: { result: any } }) => {
+        if (response.data.result) {
+          setTransactionData(response.data.result); // 상태 업데이트
+        } else {
+          setError("트랜잭션 정보를 찾을 수 없습니다."); // 에러 상태 업데이트
+        }
+      })
+      .catch((error: { message: any }) => {
+        setError(`API 호출 중 오류 발생: ${error.message}`); // 에러 상태 업데이트
+      });
+  };
 
   // 함수를 정의하여 스마트 컨트랙트와 상호작용
   const Mint = async () => {
@@ -153,12 +153,14 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
         />
       </div>
       <div>
-        <Mintbutton onClick={() => Mint()}>Mint</Mintbutton>
+        <MintButton onClick={() => Mint()}>Mint</MintButton>
       </div>
       <div>
-      <button onClick={fetchData}>Data</button>
-      {transactionData && <p>Transaction Data: {JSON.stringify(transactionData)}</p>}
-      {error && <p>error: {error}</p>}
+        <button onClick={fetchData}>Data</button>
+        {transactionData && (
+          <p>Transaction Data: {JSON.stringify(transactionData)}</p>
+        )}
+        {error && <p>error: {error}</p>}
       </div>
     </>
   );
