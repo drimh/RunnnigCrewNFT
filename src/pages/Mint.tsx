@@ -5,6 +5,7 @@ import  { useState } from "react";
 import axios from 'axios';
 import { isAsExpression } from 'typescript';
 import { TransactionDescription } from 'ethers/lib/utils';
+import styled from "styled-components";
 
 const abi = HogwartsCardFactoryABI.abi; // ABI는 스마트 컨트랙트의 ABI(Application Binary Interface) 정보를 가져온다.
 interface MintTranProps {
@@ -12,6 +13,22 @@ interface MintTranProps {
   setAccount: (account: string) => void;
 
 }
+const RegisterButton = styled.button`
+  width: 400px;
+  height: 200px;
+  background-color: 	#191970;
+  color: white;
+  text-align: center;
+`;
+const StyledInput = styled.input`
+  background-color: 	#A0522D;  // 원하는 배경색으로 변경
+  border: 5px solid 	#000000; // 테두리 색상도 필요하다면 변경
+  padding: 15px; 
+   // 패딩 추가
+   color:black;
+  margin: 5px 0; // 상하 마진 추가
+  // 기타 원하는 스타일 속성을 추가
+`;
 
 export const Mint = ({ account, setAccount }: MintTranProps) => {
   const [name, setName] = useState("");
@@ -86,49 +103,49 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
   return (
     <>
       <div>
-        <input
+        <StyledInput
           type="text"
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <input
+        <StyledInput
           type="text"
           placeholder="Age"
           value={age}
           onChange={(e) => setAge(e.target.value)}
         />
-        <input
+        <StyledInput
           type="text"
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <input
+        <StyledInput
           type="text"
           placeholder="Mbti"
           value={mbti}
           onChange={(e) => setMbti(e.target.value)}
         />
-        <input
+        <StyledInput
           type="text"
           placeholder="Hobby"
           value={hobby}
           onChange={(e) => setHobby(e.target.value)}
         />
-        <input
+        <StyledInput
           type="text"
           placeholder="Level"
           value={level}
           onChange={(e) => setLevel(e.target.value)}
         />
-        <input
+        <StyledInput
           type="text"
           placeholder="Blood"
           value={blood}
           onChange={(e) => setBlood(e.target.value)}
         />
-        <input
+        <StyledInput
           type="text"
           placeholder="Dormitory"
           value={dormitory}
@@ -136,7 +153,7 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
         />
       </div>
       <div>
-        <button onClick={() => Mint()}>Mint</button>
+        <Mintbutton onClick={() => Mint()}>Mint</Mintbutton>
       </div>
       <div>
       <button onClick={fetchData}>Data</button>
