@@ -49,6 +49,24 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
   const [transactionData, setTransactionData] = useState(null);
   const [error, setError] = useState("");
 
+  const changeColor = (value: string) => {
+      switch (value) {
+        case "Gryffindor":
+          document.body.style.backgroundColor = "";
+          break;
+        case "Slytherin":
+          document.body.style.backgroundColor = "green";
+          break;
+        case "Ravenclaw":
+          document.body.style.backgroundColor = "blue";
+          break;
+        case "Hufflepuff":
+          document.body.style.backgroundColor = 'yellow';
+          break;
+        default:
+          document.body.style.backgroundColor = 'white';  
+      }
+    };
   //ethers.js 라이브러리를 사용하여 이더리움과 연결
   //// signer는 거래에 서명할 수 있는 객체
   //// provider는 이더리움 노드에 연결하는 객체
@@ -159,7 +177,10 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
           type="text"
           placeholder="Dormitory"
           value={dormitory}
-          onChange={(e) => setDormitory(e.target.value)}
+           onChange={(e) => {
+            setDormitory(e.target.value);
+            changeColor(e.target.value);
+        }
         />
       </div>
       <div>
