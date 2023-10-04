@@ -5,11 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 interface WalletProps {
-  account: string;
   setAccount: (account: string) => void;
 }
 
-export default function Login({ account, setAccount }: WalletProps) {
+export default function Login({ setAccount }: WalletProps) {
   const navigate = useNavigate();
   const { address, isConnected } = useAccount();
   const { connect } = useConnect({

@@ -6,11 +6,6 @@ body {
   font-family: "Noto Sans KR", sans-serif;
   overscroll-behavior: none;
   font-size: 1em;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%);
-  background-position: 0%;
-  background-attachment: initial;
 }
 
 html,

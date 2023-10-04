@@ -1,61 +1,26 @@
+/** @jsxImportSource @emotion/react */
 import { constants } from "../constants";
 import { ethers, Contract, utils } from "ethers";
 import HogwartsCardFactoryABI from "../abi/HogwartsCardFactory.json";
 import { useState } from "react";
-import axios from "axios";
-import { isAsExpression } from "typescript";
-import { TransactionDescription } from "ethers/lib/utils";
-import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { useDisconnect } from "wagmi";
 import { useNavigate } from "react-router-dom";
 
 const abi = HogwartsCardFactoryABI.abi; // ABI는 스마트 컨트랙트의 ABI(Application Binary Interface) 정보를 가져온다.
-interface MintTranProps {
-  account: string;
-  setAccount: (account: string) => void;
-}
 
-// const [color, setColor] = useState("");
-
-// function changeColor(value) {
-//   switch (value) {
-//     case "그리핀도르":
-//       setColor("red");
-//   }
-// }
-
-const StyledInput = styled.input`
-  background-color: #e8af00;
-  padding: 15px;
-  color: black;
-  height: 100px;
-  width: 200px;
-  margin: 5px 0;
-  flex: 2;
-`;
-
-const MintButton = styled.button`
-  padding: 15px;
-  height: 100px;
-  width: 600px;
-  or: black;
-  margin: 5px 0;
-  background-color: #664f47;
-`;
-
-export const Mint = ({ account, setAccount }: MintTranProps) => {
+export const Mint = () => {
   const navigate = useNavigate();
+  const { disconnect } = useDisconnect();
+
+  // Info data
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [description, setDescription] = useState("");
   const [mbti, setMbti] = useState("");
   const [hobby, setHobby] = useState("");
-  const [level, setLevel] = useState("");
   const [blood, setBlood] = useState("");
   const [dormitory, setDormitory] = useState("");
-  const [transactionData, setTransactionData] = useState(null);
-  const [error, setError] = useState("");
-  const { disconnect } = useDisconnect();
 
   //ethers.js 라이브러리를 사용하여 이더리움과 연결
   //// signer는 거래에 서명할 수 있는 객체
@@ -65,46 +30,22 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
   const provider = new ethers.providers.JsonRpcProvider(
     constants.SeopoliaRPCUrl
   );
-  let HogwartsCardFactory = new ethers.Contract(
+  let HogwartsCardFactory = new Contract(
     constants.ContractAddress,
     abi,
     provider
   );
   HogwartsCardFactory = HogwartsCardFactory.connect(signer);
-  // ScanData 에 대한 정의
-
-  const fetchData = () => {
-    // 상태와 상태 업데이트 함수 정의
-
-    const apiKey = "Y3A9SI7QRVMNKSU8QWHBEBACAI26EF6XIN";
-    const transactionHash =
-      "0xf8964a6d5e383aad4daaea68f1511ecf45fbc5ccf1eb648a1e297c6660b064cc";
-    const apiUrl = `https://api.etherscan.io/api?module=proxy&action=eth_getTransactionByHash&txhash=${transactionHash}&apikey=${apiKey}`;
-
-    // 데이터를 가져오는 함수
-    axios
-      .get(apiUrl)
-      .then((response: { data: { result: any } }) => {
-        if (response.data.result) {
-          setTransactionData(response.data.result); // 상태 업데이트
-        } else {
-          setError("트랜잭션 정보를 찾을 수 없습니다."); // 에러 상태 업데이트
-        }
-      })
-      .catch((error: { message: any }) => {
-        setError(`API 호출 중 오류 발생: ${error.message}`); // 에러 상태 업데이트
-      });
-  };
 
   // 함수를 정의하여 스마트 컨트랙트와 상호작용
-  const Mint = async () => {
+  const mintCard = async () => {
     const tx = await HogwartsCardFactory.mintHogwartsCard(
       name,
       age,
       description,
       mbti,
       hobby,
-      level,
+      "1",
       blood,
       dormitory,
       {
@@ -114,86 +55,196 @@ export const Mint = ({ account, setAccount }: MintTranProps) => {
     const txReceipt = await tx.wait();
     console.log(txReceipt);
   };
+  const showImage = (dormitory: string) => {
+    let imgUrl = "";
+    switch (dormitory) {
+      case "":
+        imgUrl = constants.HogwartsImage;
+        break;
+      case "Gryffindor":
+        imgUrl = constants.GryffindorImage;
+        break;
+      case "Ravenclaw":
+        imgUrl = constants.RavenclawImage;
+        break;
+      case "Hufflepuff":
+        imgUrl = constants.HufflepuffImage;
+        break;
+      case "Slytherin":
+        imgUrl = constants.SlytherinImage;
+        break;
+    }
+    return imgUrl;
+  };
 
-  //사용자 입력을 받고, 버튼을 클릭하면 상태를 업데이트하거나 이더리움 트랜잭션을 발생시킨다.
+  const SubTitle = css`
+    padding: 14px 0px;
+    font-size: 16px;
+    font-weight: 600;
+  `;
+  const StyledInput = css`
+    width: 700px;
+    padding: 14px 12px;
+    font-size: 18px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    border: 1px dashed rgba(0, 0, 0, 0.4);
+  `;
+  const StyledTextArea = css`
+    width: 700px;
+    height: 150px;
+    padding: 14px 12px;
+    font-size: 18px;
+    font-family: "Noto Sans KR", sans-serif;
+    font-weight: 400;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    border: 1px dashed rgba(0, 0, 0, 0.4);
+  `;
+
   return (
-    <>
+    <div
+      css={{
+        margin: "30px 0px",
+        position: "absolute",
+        left: "50%",
+        transform: "translate(-50%)",
+      }}
+    >
       <div
-      // style={{
-      //   backgroundColor: color,
-      // }}
+        css={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
-        <button
+        <div />
+        <div
           onClick={async () => {
             await disconnect();
             navigate("/");
           }}
+          css={{
+            padding: "6px 10px",
+            backgroundColor: "red",
+            color: "white",
+            fontSize: 14,
+            fontWeight: 400,
+            borderRadius: 8,
+            cursor: "pointer",
+          }}
         >
           로그아웃
-        </button>
-        <h1>Sign In</h1>
-        <StyledInput
+        </div>
+      </div>
+      <h1>Minting Hogwarts Card</h1>
+      <div
+        css={{
+          display: "flex",
+          justifyContent: "center",
+          padding: "20px 0px 10px",
+        }}
+      >
+        <img width={220} src={showImage(dormitory)} />
+      </div>
+      <div
+        css={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div css={SubTitle}>Name</div>
+        <input
+          css={StyledInput}
           type="text"
-          placeholder="Name"
+          placeholder="Name your Character NFT"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
-        <StyledInput
+        <div css={SubTitle}>Age</div>
+        <input
+          css={StyledInput}
           type="text"
           placeholder="Age"
           value={age}
           onChange={(e) => setAge(e.target.value)}
+          required
         />
-        <StyledInput
-          type="text"
-          placeholder="Description"
+        <div css={SubTitle}>Blood</div>
+        <select
+          css={StyledInput}
+          name="blood"
+          onChange={(e) => setBlood(e.target.value)}
+          required
+        >
+          <option value="" hidden selected>
+            Choose your Blood
+          </option>
+          <option value="Pure">Pure</option>
+          <option value="Half">Half </option>
+          <option value="Muggle">Muggle</option>
+        </select>
+        <div css={SubTitle}>Dormitory</div>
+        <select
+          css={StyledInput}
+          name="dormitory"
+          onChange={(e) => setDormitory(e.target.value)}
+          required
+        >
+          <option value="" hidden selected>
+            Choose your Dormitory
+          </option>
+          <option value="Gryffindor">Gryffindor</option>
+          <option value="Ravenclaw">Ravenclaw </option>
+          <option value="Hufflepuff">Hufflepuff</option>
+          <option value="Slytherin">Slytherin</option>
+        </select>
+        <div css={SubTitle}>Description</div>
+        <textarea
+          css={StyledTextArea}
+          placeholder="Enter a Description (introduce anything!!)"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          required
         />
-        <StyledInput
+        <div css={SubTitle}>Mbti</div>
+        <input
+          css={StyledInput}
           type="text"
           placeholder="Mbti"
           value={mbti}
           onChange={(e) => setMbti(e.target.value)}
+          required
         />
-        <StyledInput
+        <div css={SubTitle}>Hobby</div>
+        <input
+          css={StyledInput}
           type="text"
           placeholder="Hobby"
           value={hobby}
           onChange={(e) => setHobby(e.target.value)}
-        />
-        <StyledInput
-          type="text"
-          placeholder="Level"
-          value={level}
-          onChange={(e) => setLevel(e.target.value)}
-        />
-        <StyledInput
-          type="text"
-          placeholder="Blood"
-          value={blood}
-          onChange={(e) => setBlood(e.target.value)}
-        />
-        <StyledInput
-          type="text"
-          placeholder="Dormitory"
-          value={dormitory}
-          onChange={(e) => setDormitory(e.target.value)}
+          required
         />
       </div>
-      <div>
-        <MintButton onClick={() => Mint()}>Mint</MintButton>
+      <div
+        // onClick={() => mintCard()}
+        css={{
+          width: "100%",
+          padding: "10px 20px",
+          textAlign: "center",
+          fontSize: 18,
+          fontWeight: 500,
+          backgroundColor: "#00AB59",
+          color: "white",
+          borderRadius: 10,
+          cursor: "pointer",
+          margin: "30px 0px 60px",
+        }}
+      >
+        Mint
       </div>
-      <div>
-        <button onClick={fetchData}>
-          {transactionData && (
-            <p>Transaction Data: {JSON.stringify(transactionData)}</p>
-          )}
-          {error && <p>error: {error}</p>}
-          Data
-        </button>
-      </div>
-    </>
+    </div>
   );
 };
 /*

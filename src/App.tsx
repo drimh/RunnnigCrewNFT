@@ -16,12 +16,12 @@ export default function App() {
     },
     {
       path: "/mint",
-      element: <Mint account={account} setAccount={setAccount} />,
+      element: <Mint />,
       errorElement: <ErrorPage />,
     },
     {
       path: "/login",
-      element: <Login account={account} setAccount={setAccount} />,
+      element: <Login setAccount={setAccount} />,
       errorElement: <ErrorPage />,
     },
     {
