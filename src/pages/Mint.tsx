@@ -53,7 +53,9 @@ export const Mint = () => {
       }
     );
     const txReceipt = await tx.wait();
+    const tokenId = await HogwartsCardFactory.getTokenId();
     console.log(txReceipt);
+    console.log(tokenId);
   };
   const showImage = (dormitory: string) => {
     let imgUrl = "";
@@ -228,7 +230,7 @@ export const Mint = () => {
         />
       </div>
       <div
-        // onClick={() => mintCard()}
+        onClick={() => mintCard()}
         css={{
           width: "100%",
           padding: "10px 20px",
