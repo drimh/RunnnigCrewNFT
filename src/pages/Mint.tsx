@@ -1,82 +1,113 @@
 /** @jsxImportSource @emotion/react */
 import { constants } from "../constants";
 import { ethers, Contract, utils } from "ethers";
-import HogwartsCardFactoryABI from "../abi/HogwartsCardFactory.json";
-import { useState } from "react";
+import SimpleCardNFTFactoryABI from "../abi/SimpleCardNFTFactory.json";
+import NFTEscrowABI from "../abi/NFTEscrow.json"
 import { css } from "@emotion/react";
 import { useDisconnect } from "wagmi";
+import {useState} from "react";
 import { useNavigate } from "react-router-dom";
 
-const abi = HogwartsCardFactoryABI.abi; // ABI는 스마트 컨트랙트의 ABI(Application Binary Interface) 정보를 가져온다.
+const abi = SimpleCardNFTFactoryABI.abi;
+const escrow_abi = NFTEscrowABI.abi;
 
 export const Mint = () => {
   const navigate = useNavigate();
   const { disconnect } = useDisconnect();
 
-  // Info data
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
-  const [description, setDescription] = useState("");
-  const [mbti, setMbti] = useState("");
-  const [hobby, setHobby] = useState("");
-  const [blood, setBlood] = useState("");
-  const [dormitory, setDormitory] = useState("");
+  const [residence, setResidence] = useState("");
+  const [runningGoal, setRunningGoal] = useState("");
+  const [runningSkill, setRunningSkill] = useState("");
+  const [sellerTokenId, setsellerTokenId] = useState("");
+  const [buyerAddress, setbuyerAddress] = useState("");
+  const [buyerTokenId, setbuyerTokenId] = useState("");
+  const [swapSellerTokenId, setswapSellerTokenId] = useState("");
 
-  //ethers.js 라이브러리를 사용하여 이더리움과 연결
-  //// signer는 거래에 서명할 수 있는 객체
-  //// provider는 이더리움 노드에 연결하는 객체
-  //// Factory는 스마트 컨트랙트와 상호작용할 수 있는 객체
+
   const signer = new ethers.providers.Web3Provider(window.ethereum).getSigner();
   const provider = new ethers.providers.JsonRpcProvider(
     constants.SeopoliaRPCUrl
   );
-  let HogwartsCardFactory = new Contract(
+
+  let SimpleCardNFTFactory = new Contract(
     constants.ContractAddress,
     abi,
     provider
   );
-  HogwartsCardFactory = HogwartsCardFactory.connect(signer);
 
-  // 함수를 정의하여 스마트 컨트랙트와 상호작용
-  const mintCard = async () => {
-    const tx = await HogwartsCardFactory.mintHogwartsCard(
+  let NFTEscrow = new Contract(
+    constants.EscrowAddress,
+    escrow_abi,
+    provider
+  );
+
+
+  SimpleCardNFTFactory = SimpleCardNFTFactory.connect(signer);
+  NFTEscrow = NFTEscrow.connect(signer);
+
+const Register = async () => {
+    const tx = await SimpleCardNFTFactory.registerSimpleCardInfo(
       name,
       age,
-      description,
-      mbti,
-      hobby,
-      "1",
-      blood,
-      dormitory,
-      {
-        value: utils.parseEther("0.01"),
-      }
+      residence,
+      runningGoal,
+      runningSkill,
     );
     const txReceipt = await tx.wait();
-    const tokenId = await HogwartsCardFactory.getTokenId();
     console.log(txReceipt);
-    console.log(tokenId);
   };
-  const showImage = (dormitory: string) => {
-    let imgUrl = "";
-    switch (dormitory) {
+
+  //const uri = "https://amber-gigantic-weasel-825.mypinata.cloud/ipfs/QmeN39heYkzj2g6DAm4qMiP6CftmQBG1ZSQFoPxtnXbB8J"; // 민트할 NFT의 URI를 설정합니다
+  const uri = "https://amber-gigantic-weasel-825.mypinata.cloud/ipfs/QmaZucfZHjQXFELseWfYhUF2wjkDE6nV9FyuNnfroao77w"; // 민트할 NFT의 URI를 설정합니다
+
+  const mintCard = async () => {
+    const tx = await SimpleCardNFTFactory.mintCheckMultiple(uri);
+    const txReceipt = await tx.wait();
+    console.log(txReceipt);
+  };
+
+  const deposit = async () => {
+    const _operator = constants.EscrowAddress;
+    const _approved = true; // 승인 여부를 나타내는 값
+    const tx_one = await SimpleCardNFTFactory.setApprovalForAll(_operator,_approved);
+    console.log(await tx_one.wait());
+    
+    const tx_two = await NFTEscrow.deposit(sellerTokenId, buyerAddress, buyerTokenId);
+    console.log(await tx_two.wait()); // 트랜잭션 처리를 대기합니다.
+  };
+
+  const swap = async () => {
+    const _operator = constants.EscrowAddress;
+    const _approved = true; // 승인 여부를 나타내는 값
+    const tx_one = await SimpleCardNFTFactory.setApprovalForAll(_operator,_approved);
+    console.log(await tx_one.wait());
+    
+    const tx_two = await NFTEscrow.deposit(swapSellerTokenId);
+    console.log(await tx_two.wait()); // 트랜잭션 처리를 대기합니다.
+  };
+
+  const showImage = (runningSkill: string) => {
+    let imageURL = "";
+    switch (runningSkill) {
       case "":
-        imgUrl = constants.HogwartsImage;
+        imageURL = constants.nike1;
         break;
-      case "Gryffindor":
-        imgUrl = constants.GryffindorImage;
+      case "Gosu":
+        imageURL = constants.nike2;
         break;
-      case "Ravenclaw":
-        imgUrl = constants.RavenclawImage;
+      case "Expert":
+        imageURL = constants.nike3;
         break;
-      case "Hufflepuff":
-        imgUrl = constants.HufflepuffImage;
+      case "Good":
+        imageURL = constants.nike4;
         break;
-      case "Slytherin":
-        imgUrl = constants.SlytherinImage;
+      case "Beginner":
+        imageURL = constants.nike5;
         break;
     }
-    return imgUrl;
+    return imageURL;
   };
 
   const SubTitle = css`
@@ -139,7 +170,7 @@ export const Mint = () => {
           로그아웃
         </div>
       </div>
-      <h1>Minting Hogwarts Card</h1>
+      <h1>Minting Running Crew NFT Card</h1>
       <div
         css={{
           display: "flex",
@@ -147,7 +178,7 @@ export const Mint = () => {
           padding: "20px 0px 10px",
         }}
       >
-        <img width={220} src={showImage(dormitory)} />
+        <img width={220} src={showImage(runningSkill)} alt="Character" />
       </div>
       <div
         css={{
@@ -173,90 +204,148 @@ export const Mint = () => {
           onChange={(e) => setAge(e.target.value)}
           required
         />
-        <div css={SubTitle}>Blood</div>
+        <div css={SubTitle}>residence</div>
         <select
           css={StyledInput}
-          name="blood"
-          onChange={(e) => setBlood(e.target.value)}
+          name="residence"
+          onChange={(e) => setResidence(e.target.value)}
           required
         >
           <option value="" hidden selected>
-            Choose your Blood
+            Choose your residence
           </option>
-          <option value="Pure">Pure</option>
-          <option value="Half">Half </option>
-          <option value="Muggle">Muggle</option>
+          <option value="Seoul">Seoul</option>
+          <option value="Gyeonggi">Gyeonggi </option>
+          <option value="Incheon">Incheon</option>
         </select>
-        <div css={SubTitle}>Dormitory</div>
+        <div css={SubTitle}>runningSkill</div>
         <select
           css={StyledInput}
-          name="dormitory"
-          onChange={(e) => setDormitory(e.target.value)}
+          name="runningSkill"
+          onChange={(e) => setRunningSkill(e.target.value)}
           required
         >
           <option value="" hidden selected>
-            Choose your Dormitory
+            Choose your running Skill
           </option>
-          <option value="Gryffindor">Gryffindor</option>
-          <option value="Ravenclaw">Ravenclaw </option>
-          <option value="Hufflepuff">Hufflepuff</option>
-          <option value="Slytherin">Slytherin</option>
+          <option value="Gosu">Gosu</option>
+          <option value="Expert">Expert </option>
+          <option value="Good">Good</option>
+          <option value="Beginner">Beginner</option>
         </select>
-        <div css={SubTitle}>Description</div>
+        <div css={SubTitle}>runningGoal</div>
         <textarea
           css={StyledTextArea}
           placeholder="Enter a Description (introduce anything!!)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={runningGoal}
+          onChange={(e) => setRunningGoal(e.target.value)}
           required
         />
-        <div css={SubTitle}>Mbti</div>
+        <div
+          onClick={() => Register()}
+          css={{
+            width: "100%",
+            padding: "10px 20px",
+            textAlign: "center",
+            fontSize: 18,
+            fontWeight: 500,
+            backgroundColor: "#00AB59",
+            color: "white",
+            borderRadius: 10,
+            cursor: "pointer",
+            margin: "30px 0px 60px",
+          }}
+        >
+          Info register
+        </div>
+        <div
+          onClick={() => mintCard()}
+          css={{
+            width: "100%",
+            padding: "10px 20px",
+            textAlign: "center",
+            fontSize: 18,
+            fontWeight: 500,
+            backgroundColor: "#00AB59",
+            color: "white",
+            borderRadius: 10,
+            cursor: "pointer",
+            margin: "30px 0px 60px",
+          }}
+        >
+          Mint
+        </div>
+        <div
+          onClick={() => deposit()}
+          css={{
+            width: "100%",
+            padding: "10px 20px",
+            textAlign: "center",
+            fontSize: 18,
+            fontWeight: 500,
+            backgroundColor: "#00AB59",
+            color: "white",
+            borderRadius: 10,
+            cursor: "pointer",
+            margin: "30px 0px 60px",
+          }}
+        >
+          deposit nft
+        </div>
+        <div css={SubTitle}>sellerTokenId</div>
         <input
           css={StyledInput}
           type="text"
-          placeholder="Mbti"
-          value={mbti}
-          onChange={(e) => setMbti(e.target.value)}
+          placeholder="sellerTokenId"
+          value={sellerTokenId}
+          onChange={(e) => setsellerTokenId(e.target.value)}
           required
         />
-        <div css={SubTitle}>Hobby</div>
+        <div css={SubTitle}>buyerAddress</div>
         <input
           css={StyledInput}
           type="text"
-          placeholder="Hobby"
-          value={hobby}
-          onChange={(e) => setHobby(e.target.value)}
+          placeholder="buyerAddress"
+          value={buyerAddress}
+          onChange={(e) => setbuyerAddress(e.target.value)}
           required
         />
-      </div>
-      <div
-        onClick={() => mintCard()}
-        css={{
-          width: "100%",
-          padding: "10px 20px",
-          textAlign: "center",
-          fontSize: 18,
-          fontWeight: 500,
-          backgroundColor: "#00AB59",
-          color: "white",
-          borderRadius: 10,
-          cursor: "pointer",
-          margin: "30px 0px 60px",
-        }}
-      >
-        Mint
+        <div css={SubTitle}>buyerTokenId</div>
+        <input
+          css={StyledInput}
+          type="text"
+          placeholder="buyerTokenId"
+          value={buyerTokenId}
+          onChange={(e) => setbuyerTokenId(e.target.value)}
+          required
+        />
+        <div
+          onClick={() => swap()}
+          css={{
+            width: "100%",
+            padding: "10px 20px",
+            textAlign: "center",
+            fontSize: 18,
+            fontWeight: 500,
+            backgroundColor: "#00AB59",
+            color: "white",
+            borderRadius: 10,
+            cursor: "pointer",
+            margin: "30px 0px 60px",
+          }}
+        >
+          Swap nft
+        </div>
+        <div css={SubTitle}>swapSellerTokenId</div>
+        <input
+          css={StyledInput}
+          type="text"
+          placeholder="swapSellerTokenId"
+          value={swapSellerTokenId}
+          onChange={(e) => setswapSellerTokenId(e.target.value)}
+          required
+        />
       </div>
     </div>
   );
 };
-/*
-    input example :
-    "Jiwoo Yun",
-    "22",
-    "래번클로의 반장",
-    "INTJ",
-    "독서, 영화보기, 마법주문 적용해보기",
-    "1",
-    "혼혈(Half)",
-    "래번클로(Ravenclaw)"
-*/

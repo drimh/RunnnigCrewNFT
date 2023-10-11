@@ -1,15 +1,16 @@
 export const constants = {
-  ContractAddress: "0xA07302EE1F4430Ad439752e98159DC2d5bF922b1",
+  ContractAddress: "0x034689Ff21DFc165098389F8ffEd5b4419a31853",
+  EscrowAddress : "0x7Acd9775C56ed9DEa8fA88D105536cA8E71aeA48",
   SeopoliaRPCUrl:
-    "https://eth-sepolia.g.alchemy.com/v2/JJMETsPtB9E9UmXYD4efFTe1cWrNWYJw",
-  HogwartsImage:
-    "https://i.namu.wiki/i/Sxu6AydGUYYR6qtxco2yJw7ibRM1ynZXqTMEQJsFNX0r5DdU0u_54-mlz7OF733oybj9w38eCSb5F9JH1k37ew.webp",
-  GryffindorImage:
-    "https://i.namu.wiki/i/JKJZSOeIlzT350JlcborMZ94QJ0ufVXL8cu8569Dtx3PNCdqKtk_MjhqoCrOrQeKwb2OzopmWS3bvEJRdl1FBQ.webp",
-  RavenclawImage:
-    "https://i.namu.wiki/i/s1OiOgrJYlUyfCPvslOKlYYKAux1fQUBj8LzvqBT7o-diFjI3y-3NCupO6usl7WppNga4_abd2xUpe19D494lw.webp",
-  HufflepuffImage:
-    "https://i.namu.wiki/i/b3TyfvZvm2S2jMUlgGvWbSn_fyIuyxWc6lEKxbMsSQsEBd29h7zaKyPrOobhu6l_yFcP37Oe-BjCOfvqERIN8A.webp",
-  SlytherinImage:
-    "https://i.namu.wiki/i/l4cjDKbHUIoVLvGvqhZ91oN0lbPBsrbYKYR8EFUHhLD7Rm6EDLJl5yqrjMl7cEYxApB5ZKqpsfm_y4vq_46jhA.webp",
+    "",
+  nike1:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwHVwzo0lJOcYpAtnkgF4leKUFuIvEUwWJPQ&usqp=CAU",
+  nike2:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5G2ftpZwjHTU0P7sSpKbLspTTmzedJmXUdA&usqp=CAU",
+  nike3:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_V95hDLO9gnbV3w7XQtO1oQxBJQKFaDSf1w&usqp=CAU",
+  nike4:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4NM0KkIdvbAzyCvo-pybrYF3I3sb9_e_ShA&usqp=CAU",
+  nike5:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5LGV0YHEG2qH1Umlobi_cvondOi351Z7DQQ&usqp=CAU",
 };

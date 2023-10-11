@@ -15,14 +15,11 @@ export const Main = () => {
       <img
         style={{ marginBottom: 20 }}
         width={300}
-        src="https://upload.wikimedia.org/wikipedia/commons/d/d4/Hogwarts-Crest.png"
+        src="https://cdn.imweb.me/upload/S2022031512277f1de1268/fbe5ba5d1355f.png"
       />
-      <h1>Welcome to Hogwart School!!</h1>
+      <h1>🎉🎉Welcome to Running Crew🎉🎉</h1>
       <div css={{ fontSize: 18 }}>
-        <p>You can get Hogwart Student Card NFT in here.</p>
-        <p>
-          Make your own student character NFT and show it off to your friends!
-        </p>
+        <p>😄You can get Running Crew Card NFT in here😄</p>
       </div>
       <div
         onClick={() => navigate("/login")}
